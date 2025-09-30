@@ -31,3 +31,7 @@ Transparencia: Traefik actúa como un controlador de tráfico que, de manera aut
 Escalabilidad: Cuando llegan nuevos Pokémon o nuevas instancias de servicio, traefik los detecta al instante y puede gestionar el aumento del tráfico sin intervención, asegurando que el aeropuerto puede manejar más vuelos u solicitudes eficientemente.
 Tolerancia a fallos: Si un Pokémon servicio tiene un problema y no puede volar, traefik lo retira del enrutamiento automáticamente. Así las solicitudes se redirigen a los servicios disponibles, garantizando que el aeropuerto siga operativo y que los entrenadores no experimenten interrupciones en sus viajes.
 
+<img width="1061" height="88" alt="Captura desde 2025-09-29 20-09-32" src="https://github.com/user-attachments/assets/8beadbd6-c6c5-4a32-9546-30b3988d1bdc" />
+
+
+
