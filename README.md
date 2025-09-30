@@ -12,3 +12,7 @@ Segundo Parcial
 <img width="652" height="244" alt="image" src="https://github.com/user-attachments/assets/7e5e1e41-05c9-44f5-8573-ed2b51128d98" />
 
 ## punto 2
+
+### logs legendarios
+
+<img width="827" height="423" alt="image" src="https://github.com/user-attachments/assets/9f379e1c-44fa-4ac1-8fa9-a234925883f9" />
