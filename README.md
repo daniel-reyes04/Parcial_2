@@ -25,3 +25,9 @@ stripPrefix: Renombra o repalaza una ruta por algo mas corto y conciso
 
 <img width="830" height="429" alt="image" src="https://github.com/user-attachments/assets/1f84222d-d2e9-4e1e-95f4-75e67fd97ab8" />
 
+Punto 4
+
+Transparencia: Traefik actúa como un controlador de tráfico que, de manera automática, descubre y publica las rutas disponibles, lo que permite a los usuarios saber qué servicios  están listos sin configuración manual.
+Escalabilidad: Cuando llegan nuevos Pokémon o nuevas instancias de servicio, traefik los detecta al instante y puede gestionar el aumento del tráfico sin intervención, asegurando que el aeropuerto puede manejar más vuelos u solicitudes eficientemente.
+Tolerancia a fallos: Si un Pokémon servicio tiene un problema y no puede volar, traefik lo retira del enrutamiento automáticamente. Así las solicitudes se redirigen a los servicios disponibles, garantizando que el aeropuerto siga operativo y que los entrenadores no experimenten interrupciones en sus viajes.
+
