@@ -16,3 +16,8 @@ Segundo Parcial
 ### logs legendarios
 
 <img width="827" height="423" alt="image" src="https://github.com/user-attachments/assets/9f379e1c-44fa-4ac1-8fa9-a234925883f9" />
+
+##3
+auth.basicauth: Este middleware se enfatiza en la encriptar uan ruta pudiendo credenciales (User y Password) las cuales el password debe encrptarse con htpasswd -nb 
+rate limit: Establece un limite de peticiones que se pueden hacer al mismo tiempo 
+stripPrefix: Renombra o repalaza una ruta por algo mas corto y conciso
