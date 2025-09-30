@@ -3,43 +3,21 @@ services:
     image: traefik:v2.11
     container_name: traefik
     command:
-      # --- Global Providers & Entrypoints Configuration ---
       - "--providers.docker=true"
-      # Best practice: Only expose containers that explicitly have Traefik labels set.
-      - "--providers.docker.exposedbydefault=false" 
-      # Entrypoints
+      - "--providers.docker.exposedbydefault=true"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443" # HTTPS Entrypoint
-      # API and Dashboard
       - "--api.dashboard=true"
-      # --- Certificate Resolver (Let's Encrypt Staging for Development) ---
-      # **CHANGE 'your-email@example.com' to your actual email for production!**
-      - "--certificatesresolvers.myresolver.acme.email=your-email@example.com" 
-      - "--certificatesresolvers.myresolver.acme.storage=/etc/traefik/acme.json"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory" 
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
     ports:
       - "80:80"
-      - "443:443" # Expose HTTPS
     networks:
       - firstnet
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik_acme:/etc/traefik/ # Volume to store certificates
     labels:
       - "traefik.enable=true"
-      # --- Dashboard Router (Secure Access) ---
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`ops.localhost`)"
-      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`ops.localhost`) && (PathPrefix(`/debug`) ||PathPrefix(`/api/http`) || PathPrefix(`/api/tcp`) || PathPrefix(`/api/udp`) || PathPrefix(`/api/entrypoints`) || PathPrefix(`/api/overview`) || PathPrefix(`/api/rawdata`) || PathPrefix(`/api/version`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
       - "traefik.http.routers.traefik-dashboard.middlewares=dashboard-auth"
-      # --- Global HTTP to HTTPS Redirect ---
-      - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
-      - "traefik.http.routers.http-catchall.entrypoints=web"
-      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      # --- Auth Middleware Definition ---
       - "traefik.http.middlewares.dashboard-auth.basicauth.users=admin:$$apr1$$m2MOuBMZ$$0ofBV.LI59RtR4Id9lBkg." 
 
   neo4j:
@@ -52,17 +30,6 @@ services:
       - neo4j_data:/data
     networks:
       - firstnet
-    labels:
-       - "traefik.enable=true"
-       - "traefik.http.routers.neo4j.rule=Host(`neo4j.localhost`)"
-       - "traefik.http.routers.neo4j.entrypoints=websecure"
-       - "traefik.http.routers.neo4j.tls.certresolver=myresolver"
-       - "traefik.http.routers.neo4j.middlewares=neo4j-auth@docker,ratelimit-middleware@docker"
-       - "traefik.http.middlewares.neo4j-auth.basicauth.users=admin:$$apr1$$m2MOuBMZ$$0ofBV.LI59RtR4Id9lBkg." 
-       - "traefik.http.services.neo4j.loadbalancer.server.port=7474"
-       - "traefik.http.middlewares.ratelimit-middleware.rateLimit.average=100"
-       - "traefik.http.middlewares.ratelimit-middleware.rateLimit.burst=50"
-
     healthcheck:
       test: ["CMD", "cypher-shell", "-a", "bolt://localhost:7687", "-u", "$NEO4J_USER", "-p", "$NEO4J_PASSWORD", "RETURN 1"]
       interval: 5s
@@ -84,21 +51,15 @@ services:
       - firstnet
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.flask-http.rule=Host(`api.localhost`)"
-      - "traefik.http.routers.flask-http.entrypoints=web"
-      - "traefik.http.routers.flask-http.middlewares=ratelimit-middleware@docker"
-      - "traefik.http.routers.flask-https.rule=Host(`api.localhost`)"
-      - "traefik.http.routers.flask-https.entrypoints=websecure"
-      - "traefik.http.routers.flask-https.tls.certresolver=myresolver"
-      - "traefik.http.routers.flask-https.middlewares=ratelimit-middleware@docker"
+      - "traefik.http.routers.flask.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.flask.entrypoints=web"
+      - "traefik.http.routers.flask.middlewares=ratelimit-middleware@docker"
       - "traefik.http.services.flask.loadbalancer.server.port=5000"
       - "traefik.http.middlewares.ratelimit-middleware.rateLimit.average=100"
       - "traefik.http.middlewares.ratelimit-middleware.rateLimit.burst=50"
 
 volumes:
   neo4j_data:
-    driver: local
-  traefik_acme: 
     driver: local
 
 networks:
